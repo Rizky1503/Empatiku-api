@@ -32,3 +32,8 @@ Route.group(() => {
 	Route.post('StoreMitdorBerkas', 'Admin/AdminController.StoreMitdorBerkas')
 
 }).prefix('api/v1/mitdor')
+
+Route.group(() => {
+	Route.get('list', 'Admin/ListMitraVendorController.ListMitraVendor')
+
+}).prefix('api/v1/ListMitdor')
