@@ -7,23 +7,39 @@ const Helpers = use('Helpers')
 class AdminController {
 
 // start login
-	// async login({request,response}){
-	// 	const pelangganInfo = request.only(['username','password'])
-	// 	const cekEmail = await Database.from('in_member').where('username',pelangganInfo.username).where('status_admin','1').first() 
-	// 	if(cekEmail){
-	// 		if (Encryption.decrypt(cekEmail.password) == pelangganInfo.password) {
-	// 			return response.status(200).json({
-	// 				cekEmail,
-	// 				status: 'true',
-	// 		  	})		
-	// 		}else{
-	// 			return response.json({status : 'false'})	
-	// 		}
-
-	// 	}else{
-	// 		return response.json({status : 'false'})	
-	// 	}
-	// }
+	async login({request,response}){
+		const pelangganInfo = request.only(['email','password'])
+		
+		const cekEmailMitra = await Database.from('in_mitra_pic').where('email',pelangganInfo.email).first()
+		const cekEmailVEndor = await Database.from('in_vendor_pic').where('email',pelangganInfo.email).first() 
+		
+		if (cekEmailMitra) {
+			if (Encryption.decrypt(cekEmailMitra.password) == pelangganInfo.password) {
+				return response.status(200).json({
+					data :cekEmailMitra,
+					status: 'true Mitra',
+			  	})
+			}else{
+				return response.json({status : 'false'})
+			}		
+		}else if(cekEmailVEndor){
+			if (Encryption.decrypt(cekEmailVEndor.password) == pelangganInfo.password) {
+				return response.status(200).json({
+					data : cekEmailVEndor,
+					status: 'true Vendor',
+			  	})
+			}else{
+				return response.json({status : 'false'})
+			}		
+		}else if( pelangganInfo.email == 'admin' && pelangganInfo.password == '3mp4t1ku' ){
+			return response.status(200).json({
+				data : [],
+				status: 'true Admin',
+			})
+		}else{
+			return response.json({status : 'false'})
+		}
+	}
 // end login
 
 // start mitra/vendor
