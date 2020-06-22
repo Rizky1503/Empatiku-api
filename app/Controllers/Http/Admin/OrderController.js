@@ -35,6 +35,7 @@ class OrderController {
 			.table('in_pemesan')
 			.innerJoin('in_order','in_pemesan.id_pemesan','in_order.id_pemesan')
 			.where('in_pemesan.status','Requested')
+		// return data;
 
 		for (var keyPesanan = 0; keyPesanan < data.length; keyPesanan++) {
 			const Pemesan = await Database
@@ -52,6 +53,7 @@ class OrderController {
 
 	async DetailPesanan({params,response}){
 		const data = await Database
+			.select('in_mitra.nama','in_mitra_produk.nama_produk','in_mitra_produk.harga','in_order.jumlah','in_order.desc','in_mitra.no_telp','in_order.id_produk')
 			.table('in_order')
 			.innerJoin('in_mitra','in_order.id_mitra','in_mitra.id_mitra')
 			.innerJoin('in_mitra_produk','in_order.id_produk','in_mitra_produk.id_produk')
