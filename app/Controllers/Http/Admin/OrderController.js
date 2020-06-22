@@ -33,7 +33,8 @@ class OrderController {
 	async pemesanRequest({response}){
 		const data = await Database
 			.table('in_pemesan')
-			.where('status','Requested')
+			.innerJoin('in_order','in_pemesan.id_pemesan','in_order.id_pemesan')
+			.where('in_pemesan.status','Requested')
 
 		for (var keyPesanan = 0; keyPesanan < data.length; keyPesanan++) {
 			const Pemesan = await Database
@@ -91,18 +92,6 @@ class OrderController {
 				jumlah : sisaproduk, 
 			})
 
-		const pemesan = await Database
-			.insert({
-				nama_pemesan 	: Inputs.nama_pemesan,
-				no_telpon		: Inputs.no_telp_pemesan,
-				alamat			: Inputs.alamat,
-				status			: 'Requested',
-				created_at 	 	: new Date(),
-				updated_at 	 	: new Date(),
-			})
-			.into('in_pemesan')
-			.returning('id_pemesan')
-
 		if(Inputs.id_pemesan){
 			const cek_pesanan = await Database
 				.table('in_order')
@@ -142,6 +131,18 @@ class OrderController {
 					})
 			}
 		}else{
+			const pemesan = await Database
+				.insert({
+					nama_pemesan 	: Inputs.nama_pemesan,
+					no_telpon		: Inputs.no_telp_pemesan,
+					alamat			: Inputs.alamat,
+					status			: 'Requested',
+					created_at 	 	: new Date(),
+					updated_at 	 	: new Date(),
+				})
+				.into('in_pemesan')
+				.returning('id_pemesan')
+
 			const Data = await Database
 				.insert({
 					id_produk		: Inputs.id_produk,
@@ -177,7 +178,7 @@ class OrderController {
 		const tambah = await Database
 			.table('in_mitra_produk')
 			.where('id_produk',Inputs.id_produk)
-			.update({ jumlah : parseFloat(DataProduk.jumlah) + parseFloat(DataBatal.jumlah) })
+			.update({ jumlah : parseFloat(DataProduk.jumlah) + parseFloat(DataBatal[0].jumlah) })
 
 		const hapus = await Database
 			.table('in_order')
@@ -227,19 +228,19 @@ class OrderController {
 		const update = await Database
 			.table('in_pemesan')
 			.where('id_pemesan',Inputs.id_pemesan)
-			.update({ status : 'DP' })
+			.update({ status : 'DP', updated_at : new Date() })
 	}
 
 	async LunasiPemesanan({params}){
 		const update = await Database
 			.table('in_pemesan')
 			.where('id_pemesan',params.id)
-			.update({ status : 'Lunas' })
+			.update({ status : 'Lunas' , updated_at : new Date() })
 
 		const updatedeal = await Database
 			.table('in_order_deal')
 			.where('id_pemesan',params.id)
-			.update({ status : 'Lunas' })
+			.update({ status : 'Lunas' , updated_at : new Date() })
 	}
 
 	async pesananmitdor({response,params}){
