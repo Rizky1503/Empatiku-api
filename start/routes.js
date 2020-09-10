@@ -17,6 +17,7 @@
 const Route = use('Route')
 const Helpers = use('Helpers')
 
+require('./routes-mobile')
 
 Route.get('/', 'Admin/AdminController.test')
 
