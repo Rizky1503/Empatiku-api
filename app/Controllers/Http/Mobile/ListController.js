@@ -54,24 +54,22 @@ class ListController {
 				.orderBy('t1.nama_produk','ASC')
 				.paginate(Inputs.page,5)
 
-				for (var keyImgPr = 0; keyImgPr < list.length; keyImgPr++) {
+				let produk = list.data
+				for (var keyImgPr = 0; keyImgPr < produk.length; keyImgPr++) {
 					const Image = await Database
 						.table('in_mitra_gambar_produk')
-						.where('id_produk',list[keyImgPr].id_produk)
-						.first()
+						.where('id_produk',produk[keyImgPr].id_produk)
 
 						for(var i = 0; i < Image.length; i++){
 							Image[i].gambar_produk = 'http://api.binercloud.com:6464/api/v1/image/file/produk/'+Image[i].gambar_produk
 						}
-						
-					list[keyImgPr]['image'] = Image;
-				}
-			kategori[i]['list'] = list
-	
 
+					produk[keyImgPr]['image'] = Image;
+				}
+	
 			return response.json({
 				response : 200,
-				data     : kategori
+				data     : produk
 			})
 		}catch(e){
 			return response.json({
