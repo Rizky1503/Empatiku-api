@@ -59,15 +59,20 @@ class LoginController {
 	        		})
 
 	        	if (insert) {
+	        		const member = await Database
+	        			.table('in_member')
+	        			.where('id_member',lastmemberid)
+	        			.first()
+
 	        		return response.json({
 	        			response : 200,
-	        			data     : 'Akun Berhasil Didaftarkan'
+	        			data     : member
 	        		})
 	        	}
 	        }
 	    }catch(e){
 	    	return response.json({
-	    		response : 500,
+	    		response : 201,
 	    		data     : e,
 	    	})
 	    }
@@ -81,23 +86,23 @@ class LoginController {
 				if (Encryption.decrypt(cekEmail.password) == Inputs.password) {
 					return response.json({
 						response : 200,
-						data     : 'Sukses'
+						data     : cekEmail
 					})	
 				}else{
 					return response.json({
-						response : 204,
+						response : 203,
 						data     : 'Email dan Username Salah'
 					})		
 				}
 			}else{
 				return response.json({
-					response : 404,
+					response : 204,
 					data     : 'Email Tidak Terdaftar'
 				})
 			}
 		}catch(e){
 			return response.json({
-				response : 500,
+				response : 201,
 				data     : e
 			})
 		}
