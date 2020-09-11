@@ -46,30 +46,28 @@ class ListController {
 	async listProdukKategori({response,request}){
 		const Inputs = request.only(['kategori','page'])
 		try{
-			const kategori = await Database
-				.select('kategori')
-				.table('in_mitra_produk')
-				.where('kategori',Inputs.kategori)
-				.orderBy('kategori','ASC')
+			const list = await Database
+				.select('t2.id_mitra','t2.nama','t2.email','t2.no_telp','kota','alamat','t1.id_produk','t1.nama_produk','t1.jumlah','t1.harga','t1.deskripsi','t1.sub_kategori')
+				.innerJoin('in_mitra as t2','t1.id_mitra','t2.id_mitra')
+				.table('in_mitra_produk as t1')
+				.where('t1.kategori',Inputs.kategori)
+				.orderBy('t1.nama_produk','ASC')
+				.paginate(Inputs.page,5)
 
-			for(var i =  0; i < kategori.length; i++){
-				const list = await Database
-					.select('t2.id_mitra','t2.nama','t2.email','t2.no_telp','kota','alamat','t1.id_produk','t1.nama_produk','t1.jumlah','t1.harga','t1.deskripsi','t1.sub_kategori')
-					.innerJoin('in_mitra as t2','t1.id_mitra','t2.id_mitra')
-					.table('in_mitra_produk as t1')
-					.where('t1.kategori',kategori[i].kategori)
-					.orderBy('t1.nama_produk','ASC')
-					.paginate(Inputs.page,5)
+				for (var keyImgPr = 0; keyImgPr < list.length; keyImgPr++) {
+					const Image = await Database
+						.table('in_mitra_gambar_produk')
+						.where('id_produk',list[keyImgPr].id_produk)
+						.first()
 
-					for (var keyImgPr = 0; keyImgPr < list.length; keyImgPr++) {
-						const Image = await Database
-							.table('in_mitra_gambar_produk')
-							.where('id_produk',list[keyImgPr].id_produk)
-							.first()
-						list[keyImgPr]['image'] = Image;
-					}
-				kategori[i]['list'] = list
-			}
+						for(var i = 0; i < Image.length; i++){
+							Image[i].gambar_produk = 'http://api.binercloud.com:6464/api/v1/image/file/produk/'+Image[i].gambar_produk
+						}
+						
+					list[keyImgPr]['image'] = Image;
+				}
+			kategori[i]['list'] = list
+	
 
 			return response.json({
 				response : 200,
