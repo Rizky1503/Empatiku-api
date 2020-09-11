@@ -43,12 +43,13 @@ class ListController {
 		}	
 	}
 
-	async listProdukKategori({response,params}){
+	async listProdukKategori({response,request}){
+		const Inputs = request.only(['kategori','page'])
 		try{
 			const kategori = await Database
 				.select('kategori')
 				.table('in_mitra_produk')
-				.where('kategori',params.id)
+				.where('kategori',Inputs.kategori)
 				.orderBy('kategori','ASC')
 
 			for(var i =  0; i < kategori.length; i++){
@@ -58,6 +59,7 @@ class ListController {
 					.table('in_mitra_produk as t1')
 					.where('t1.kategori',kategori[i].kategori)
 					.orderBy('t1.nama_produk','ASC')
+					.paginate(Inputs.page,5)
 
 					for (var keyImgPr = 0; keyImgPr < list.length; keyImgPr++) {
 						const Image = await Database

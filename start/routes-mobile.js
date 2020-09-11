@@ -26,7 +26,7 @@ Route.group(() => {
 
 Route.group(() => {
 	Route.get('list', 'Mobile/ListController.list')
-	Route.get('listProdukKategori/:id', 'Mobile/ListController.listProdukKategori')
+	Route.post('listProdukKategori', 'Mobile/ListController.listProdukKategori')
 	Route.get('DetailProduk/:id', 'Mobile/ListController.DetailProduk')
 }).prefix('api/v1/mobile/produk')
 
