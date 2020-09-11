@@ -33,9 +33,9 @@ class OrderController {
 	async pemesanRequest({response}){
 		const data = await Database
 			.table('in_pemesan')
-			.innerJoin('in_order','in_pemesan.id_pemesan','in_order.id_pemesan')
+			.innerJoin('in_order','in_pemesan.id_member','in_order.id_pemesan')
 			.where('in_pemesan.status','Requested')
-		// return data;
+		return data;
 
 		for (var keyPesanan = 0; keyPesanan < data.length; keyPesanan++) {
 			const Pemesan = await Database

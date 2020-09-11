@@ -29,3 +29,11 @@ Route.group(() => {
 	Route.get('DetailProduk/:id', 'Mobile/ListController.DetailProduk')
 }).prefix('api/v1/mobile/produk')
 
+
+Route.group(() => {
+	Route.post('produk', 'Mobile/OrderController.Order')
+}).prefix('api/v1/mobile/order')
+
+
+
+
