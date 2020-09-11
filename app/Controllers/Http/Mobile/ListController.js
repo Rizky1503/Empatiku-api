@@ -43,6 +43,44 @@ class ListController {
 		}	
 	}
 
+	async listProdukKategori({response,params}){
+		try{
+			const kategori = await Database
+				.select('kategori')
+				.table('in_mitra_produk')
+				.where('kategori',params.id)
+				.orderBy('kategori','ASC')
+
+			for(var i =  0; i < kategori.length; i++){
+				const list = await Database
+					.select('t2.id_mitra','t2.nama','t2.email','t2.no_telp','kota','alamat','t1.id_produk','t1.nama_produk','t1.jumlah','t1.harga','t1.deskripsi','t1.sub_kategori')
+					.innerJoin('in_mitra as t2','t1.id_mitra','t2.id_mitra')
+					.table('in_mitra_produk as t1')
+					.where('t1.kategori',kategori[i].kategori)
+					.orderBy('t1.nama_produk','ASC')
+
+					for (var keyImgPr = 0; keyImgPr < list.length; keyImgPr++) {
+						const Image = await Database
+							.table('in_mitra_gambar_produk')
+							.where('id_produk',list[keyImgPr].id_produk)
+							.first()
+						list[keyImgPr]['image'] = Image;
+					}
+				kategori[i]['list'] = list
+			}
+
+			return response.json({
+				response : 200,
+				data     : kategori
+			})
+		}catch(e){
+			return response.json({
+				response  : 201,
+				data      : e,
+			})
+		}
+	}
+
 	async DetailProduk({params,response}){
 		try{
 			const data = await Database
