@@ -56,7 +56,7 @@ class OrderController {
 			.table('in_order')
 			.innerJoin('in_mitra','in_order.id_mitra','in_mitra.id_mitra')
 			.innerJoin('in_mitra_produk','in_order.id_produk','in_mitra_produk.id_produk')
-			.where('in_order.id_member',params.id)
+			.where('in_order.id_pemesan',params.id)
 
 		const pemesan = await Database
 			.table('in_pemesan')
