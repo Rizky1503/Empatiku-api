@@ -18,8 +18,14 @@
 const Route = use('Route')
 const Helpers = use('Helpers')
 
-//CS
 Route.group(() => {
 	Route.post('registrasi', 'Mobile/LoginController.registrasi')
 	Route.post('login', 'Mobile/LoginController.login')
 }).prefix('api/v1/mobile')
+
+
+Route.group(() => {
+	Route.get('list', 'Mobile/ListController.list')
+	Route.get('DetailProduk/:id', 'Mobile/ListController.DetailProduk')
+}).prefix('api/v1/mobile/produk')
+
