@@ -9,6 +9,7 @@ class OrderController {
 	async Order ({request,response}){
 		try{
 			const Inputs = request.only(['id_produk','id_mitra','jumlah','nama_pemesan','no_telp_pemesan','alamat','desc','id_member'])
+			return Inputs
 
 			const ambiljumlahproduk = await Database
 				.select('jumlah')
