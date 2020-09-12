@@ -79,6 +79,66 @@ class ListController {
 		}
 	}
 
+	async listMitra({response,request}){
+		const Inputs = request.only(['kategori','page'])
+		try{
+			const list = await Database
+				.select('t2.id_mitra','t2.nama','t2.email','t2.no_telp','kota','alamat')
+				.leftJoin('in_mitra as t2','t1.id_mitra','t2.id_mitra')
+				.table('in_mitra_produk as t1')
+				.where('t1.kategori',Inputs.kategori)
+				.orderBy('t2.id_mitra','ASC')
+				.groupBy('t2.id_mitra')
+				.paginate(Inputs.page,5)
+
+			return response.json({
+				response : 200,
+				data     : list
+			})
+		}catch(e){
+			return response.json({
+				response  : 201,
+				data      : e,
+			})
+		}
+	}
+
+	async listProdukMitra({response,request}){
+		const Inputs = request.only(['id_mitra','page'])
+		try{
+			const list = await Database
+				.select('t2.id_mitra','t2.nama','t2.email','t2.no_telp','kota','alamat','t1.id_produk','t1.nama_produk','t1.jumlah','t1.harga','t1.deskripsi','t1.sub_kategori')
+				.innerJoin('in_mitra as t2','t1.id_mitra','t2.id_mitra')
+				.table('in_mitra_produk as t1')
+				.where('t2.id_mitra',Inputs.id_mitra)
+				.orderBy('t1.nama_produk','ASC')
+				.paginate(Inputs.page,5)
+
+				let produk = list.data
+				for (var keyImgPr = 0; keyImgPr < produk.length; keyImgPr++) {
+					const Image = await Database
+						.table('in_mitra_gambar_produk')
+						.where('id_produk',produk[keyImgPr].id_produk)
+
+						for(var i = 0; i < Image.length; i++){
+							Image[i].gambar_produk = 'http://api.binercloud.com:6464/api/v1/image/file/produk/'+Image[i].gambar_produk
+						}
+
+					produk[keyImgPr]['image'] = Image;
+				}
+	
+			return response.json({
+				response : 200,
+				data     : produk
+			})
+		}catch(e){
+			return response.json({
+				response  : 201,
+				data      : e,
+			})
+		}
+	}
+
 	async DetailProduk({params,response}){
 		try{
 			const data = await Database
