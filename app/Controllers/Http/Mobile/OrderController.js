@@ -7,9 +7,8 @@ const randomstring = use("randomstring");
 
 class OrderController {
 	async Order ({request,response}){
-		// try{
+		try{
 			const Inputs = request.only(['id_produk','id_mitra','jumlah','nama_pemesan','no_telp_pemesan','alamat','desc','id_member'])
-			return Inputs
 
 			const ambiljumlahproduk = await Database
 				.select('jumlah')
@@ -78,12 +77,12 @@ class OrderController {
 				response : 200,
 				data     : "Sukses Order"
 			})
-		// }catch(e){
+		}catch(e){
 			return response.json({
 				response  : 201,
 				data      : e,
 			})
-		// }
+		}
 	}
 }
 module.exports = OrderController	
